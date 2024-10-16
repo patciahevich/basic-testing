@@ -8,16 +8,17 @@ const fakeTime = 3000;
 describe('doStuffByTimeout', () => {
   beforeAll(() => {
     jest.useFakeTimers();
-    jest.spyOn(global, 'setTimeout');
   });
 
   afterAll(() => {
     jest.useRealTimers();
+    jest.restoreAllMocks();
   });
 
   test('should set timeout with provided callback and timeout', () => {
+    const fakeTimeout = jest.spyOn(global, 'setTimeout');
     doStuffByTimeout(fakeCallback, fakeTime);
-    expect(setTimeout).toHaveBeenCalledWith(fakeCallback, fakeTime);
+    expect(fakeTimeout).toHaveBeenCalledWith(fakeCallback, fakeTime);
   });
 
   test('should call callback only after timeout', () => {
@@ -31,16 +32,21 @@ describe('doStuffByTimeout', () => {
 describe('doStuffByInterval', () => {
   beforeAll(() => {
     jest.useFakeTimers();
-    jest.spyOn(global, 'setInterval');
   });
 
   afterAll(() => {
     jest.useRealTimers();
+    jest.restoreAllMocks();
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
   });
 
   test('should set interval with provided callback and timeout', () => {
+    const fakeInterval = jest.spyOn(global, 'setInterval');
     doStuffByInterval(fakeCallback, fakeTime);
-    expect(setInterval).toHaveBeenCalledWith(fakeCallback, fakeTime);
+    expect(fakeInterval).toHaveBeenCalledWith(fakeCallback, fakeTime);
   });
 
   test('should call callback multiple times after multiple intervals', () => {
@@ -54,6 +60,7 @@ describe('doStuffByInterval', () => {
 
 const testPath = '/somepath/text.txt';
 const testContent = 'Some text to read';
+const currentDir = __dirname;
 
 describe('readFileAsynchronously', () => {
   afterEach(() => {
@@ -61,9 +68,9 @@ describe('readFileAsynchronously', () => {
   });
 
   test('should call join with pathToFile', async () => {
-    jest.spyOn(path, 'join');
+    const fakeJoin = jest.spyOn(path, 'join');
     readFileAsynchronously(testPath);
-    expect(path.join).toHaveBeenCalledWith(testPath);
+    expect(fakeJoin).toHaveBeenCalledWith(currentDir, testPath);
   });
 
   test('should return null if file does not exist', async () => {

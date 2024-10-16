@@ -18,6 +18,7 @@ describe('partial mocking', () => {
   });
 
   test('mockOne, mockTwo, mockThree should not log into console', () => {
+    const fakeConsole = jest.spyOn(console, 'log');
     mockOne();
     mockTwo();
     mockThree();
@@ -25,6 +26,7 @@ describe('partial mocking', () => {
     expect(mockOne).toHaveBeenCalled();
     expect(mockTwo).toHaveBeenCalled();
     expect(mockThree).toHaveBeenCalled();
+    expect(fakeConsole).not.toHaveBeenCalled();
   });
 
   test('unmockedFunction should log into console', () => {
