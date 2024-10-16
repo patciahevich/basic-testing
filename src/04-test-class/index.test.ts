@@ -73,8 +73,10 @@ describe('BankAccount', () => {
 
   test('fetchBalance should return number in case if request did not failed', async () => {
     const mockBalance = 10;
+
     (random as jest.Mock).mockReturnValueOnce(mockBalance);
     (random as jest.Mock).mockReturnValueOnce(1);
+
     const balance = await bankAccount.fetchBalance();
 
     expect(balance).toBe(mockBalance);
